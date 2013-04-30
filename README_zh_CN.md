@@ -1,41 +1,39 @@
-# pymysqlrpc#
+#pymysqlrpc#
 
 ----------
 
-BTW: after writing readme in chinese, I used Youdao Dict translate it into english, and modify something. I hope you can understand those, if feel uncertain, reading the source and example. The language of programmer is code.
+###简介###
 
-###Introduction###
+pymysqlrpc是一个非常有趣，非常简单的rpc框架。实现了 **mysql服务端协议**，基于**gevent**开发，将对mysql存储过程的调用映射到python的一个函数或者一个实例的某个方法。
 
-pymysqlrpc is a very interesting, very simple RPC framework, implement **mysql server protocol**,  on top of **gevent**,  map one call of mysql stored procedures to python's a function or a method of an instance.
+目前pymysqlrpc的版本为 1.0.0，并且使用MIT协议。
 
-At present, pymysqlrpc version is 1.0.0, and MIT license.
+为什么基于mysql协议？mysql已经具有：
 
-Why implement the mysql server protocol? Mysql already have:
+- 用户
+- 密码认证
+- 权限控制
+- 协议规范
+- 各种语言都有client lib
 
-- the user
-- password authentication
-- access control
-- protocol specifications
-- all languages have mysql client lib.
+mysql的存储过程更加具有：
 
-Mysql stored procedures have more:
+- 方法名
+- 入参规范
+- 返回规范
+- 序列化和反序列化
 
-- the method name
-- the parameter specification
-- the return specification
-- serialization and deserialization
+只要调用者曾经使用过mysql DB开发，那么在向他发布 pymysqlrpc 服务时候，不用协商网络协议，参数规范，只要告诉他象调用一个mysql的存储过程就可以了。这样大大降低了沟通，使用成本。
 
-As long as the developer used mysql DB, when release the pymysqlrpc service, need not consultation network protocol, parameter specification, just tell developer like calling a mysql stored procedures. This greatly reduces the communication.
+为什么使用gevent？这是个问题吗？
 
-Why use gevent? Why not?
+###使用入门###
 
-###How to use###
-
-First of all， install pymysqlrpc from pypi or clone from [pymysqlrpc on github](http://www.github.com/feihuroger/pymysqlrpc):
+首先从pypi上安装pymysqlrpc 或者从 [pymysqlrpc on github](http://www.github.com/feihuroger/pymysqlrpc) clone源码:
 
 	easy_install pymysqlrpc
 
-And then to write one of the most simple example, know about the use pymysqlrpc
+然后我们来写一个最简单的例子：
 
 runmain.py
 
@@ -54,19 +52,17 @@ runmain.py
 	server.serve_forever()
 
 
-Run the server:
+运行服务端：
 
 	$python runmain.py
 
-Use the mysql command client connection:
+然后可以使用mysql的命令客户端连接：
 
-	$mysql -utestuser －ptestpass --P3308
+	$mysql -utestuser -ptestpass -P3308
 
-After the connection is successful, rpc can be invoked just like invoke mysql stored procedures defined in the method:
+连接成功后，可以象调用mysql存储过程一样来调用刚才定义的方法：**mysql>call myadd(3,4);**
 
-	mysql>call myadd(3,4);
-
-the result:
+可以得到结果：
 
 	mysql> call myadd(3,4);
 	+------+
@@ -76,11 +72,11 @@ the result:
 	+------+
 	1 row in set (0.00 sec)
 
-You can view pymysqlrpc server status throght web or mysql command line，if you set user "root" and root's login password and webview password
+pymysqlrpc 提供了web，命令行两种查看系统状态的方式，如果你在aclmap中设置了root用户的登录密码，web查看密码。
 
-Access this address in your browser's address bar:[http://localhost:8308/pymysqlrpc/info/root/viewpass](http://localhost:8308/pymysqlrpc/info/root/viewpass)
+在浏览器地址栏访问这个地址：[http://localhost:8308/pymysqlrpc/info/root/viewpass](http://localhost:8308/pymysqlrpc/info/root/viewpass)
 
-then can see:
+可以看到：
 
 	python_version : 2.7.4
 	gevent_version : 1.0b2
@@ -99,11 +95,11 @@ then can see:
 	client 2       : root@('127.0.0.1', 4997) authBEG: 04-29 12:48:26 lastqueryBEG: 04-29 12:49:40  totalquery:3
 
 
-and you can login pymysqlrpc server throght mysql command line:
+还可以root 用户 mysql命令行登录：
 
 	$mysql -uroot -prootpass -P3308
 
-type  **call pymysqlrpcinfo;**
+执行 **call pymysqlrpcinfo;**
 
 	mysql> call pymysqlrpcinfo;
 	+----------------+--------------------------------------------------------------------------------------------------+
@@ -127,8 +123,8 @@ type  **call pymysqlrpcinfo;**
 	+----------------+--------------------------------------------------------------------------------------------------+
 	15 rows in set (0.00 sec)
 
-###project site###
+###项目站点###
 
-Please visit the [pymysqlrpc on github](http://www.github.com/feihuroger/pymysqlrpc "http://www.github.com/feihuroger/pymysqlrpc"), a more comprehensive demo in example directory.
+请访问 [github上的pymysqlrpc](http://www.github.com/feihuroger/pymysqlrpc "http://www.github.com/feihuroger/pymysqlrpc")，更加全面的例子，注释在example目录下。
 
-by feihu.roger@2013/5/1
+feihu.roger@2013年5月1日
