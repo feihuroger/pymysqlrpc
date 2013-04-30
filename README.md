@@ -8,7 +8,7 @@ BTW: after writing readme in chinese, I used Youdao Dict translate it into engli
 
 pymysqlrpc is a very interesting, very simple RPC framework, implement **mysql server protocol**,  on top of **gevent**,  map one call of mysql stored procedures to python's a function or a method of an instance.
 
-At present, pymysqlrpc version is 1.0.0, and MIT license.
+At present, pymysqlrpc version is 0.1.0, and MIT license.
 
 Why implement the mysql server protocol? Mysql already have:
 
@@ -130,5 +130,7 @@ type  **call pymysqlrpcinfo;**
 ###project site###
 
 Please visit the [pymysqlrpc on github](http://www.github.com/feihuroger/pymysqlrpc "http://www.github.com/feihuroger/pymysqlrpc"), a more comprehensive demo in example directory.
+
+Thanks of my co-worker at that time: gashero, kilnt, bob.ning. The rpc framework evolution from twisted, socket&flup, ioloop of tornado 1.x, now I rewrite it by gevent.
 
 by feihu.roger@2013/5/1

@@ -4,9 +4,9 @@
 
 ###简介###
 
-pymysqlrpc是一个非常有趣，非常简单的rpc框架。实现了 **mysql服务端协议**，基于**gevent**开发，将对mysql存储过程的调用映射到python的一个函数或者一个实例的某个方法。
+pymysqlrpc是一个非常有趣，非常简单的rpc框架。实现了 **mysql服务端协议**，基于 **gevent**开发，将对mysql存储过程的调用映射到python的一个函数或者一个实例的某个方法。
 
-目前pymysqlrpc的版本为 1.0.0，并且使用MIT协议。
+目前pymysqlrpc的版本为 0.1.0，并且使用MIT协议。
 
 为什么基于mysql协议？mysql已经具有：
 
@@ -60,7 +60,7 @@ runmain.py
 
 	$mysql -utestuser -ptestpass -P3308
 
-连接成功后，可以象调用mysql存储过程一样来调用刚才定义的方法：**mysql>call myadd(3,4);**
+连接成功后，可以象调用mysql存储过程一样来调用刚才定义的方法：**mysql> call myadd(3,4);**
 
 可以得到结果：
 
@@ -126,5 +126,7 @@ pymysqlrpc 提供了web，命令行两种查看系统状态的方式，如果你
 ###项目站点###
 
 请访问 [github上的pymysqlrpc](http://www.github.com/feihuroger/pymysqlrpc "http://www.github.com/feihuroger/pymysqlrpc")，更加全面的例子，注释在example目录下。
+
+感谢当时参与过开发的前同事：gashero, kilnt, bob.ning. rpc的版本从 twisted, socket&flup, ioloop 一路走过来，现在由我把它改写成gevent并开源。
 
 feihu.roger@2013年5月1日
