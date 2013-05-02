@@ -60,7 +60,7 @@ Run the server:
 
 Use the mysql command client connection:
 
-	$mysql -utestuser -ptestpass --P3308
+	$mysql -utestuser -ptestpass -P3308
 
 Or for Mac OS X Users:
 	
