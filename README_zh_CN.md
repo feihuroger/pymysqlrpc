@@ -59,6 +59,9 @@ runmain.py
 然后可以使用mysql的命令客户端连接：
 
 	$mysql -utestuser -ptestpass -P3308
+如果是Mac用户：
+	
+	$mysql --port 3308 -h 127.0.0.1 -utestuser -ptestpass
 
 连接成功后，可以象调用mysql存储过程一样来调用刚才定义的方法：**mysql> call myadd(3,4);**
 
