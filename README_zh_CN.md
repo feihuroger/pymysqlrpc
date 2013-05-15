@@ -74,7 +74,7 @@ runmain.py
 
 pymysqlrpc 提供了web，命令行两种查看系统状态的方式，如果你在aclmap中设置了root用户的登录密码，web查看密码。
 
-在浏览器地址栏访问这个地址：[http://localhost:8308/pymysqlrpc/info/root/viewpass](http://localhost:8308/pymysqlrpc/info/root/viewpass)
+在浏览器地址栏访问这个地址：[http://localhost:8308/pymysqlrpc/info/root/webviewpass](http://localhost:8308/pymysqlrpc/info/root/webviewpass)
 
 可以看到：
 

@@ -77,7 +77,7 @@ the result:
 
 You can view pymysqlrpc server status throght web or mysql command line，if you set user "root" and root's login password and webview password
 
-Access this address in your browser's address bar:[http://localhost:8308/pymysqlrpc/info/root/viewpass](http://localhost:8308/pymysqlrpc/info/root/viewpass)
+Access this address in your browser's address bar:[http://localhost:8308/pymysqlrpc/info/root/webviewpass](http://localhost:8308/pymysqlrpc/info/root/webviewpass)
 
 then can see:
 
