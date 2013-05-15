@@ -60,10 +60,6 @@ Run the server:
 
 Use the mysql command client connection:
 
-	$mysql -utestuser -ptestpass -P3308
-
-Or for Mac OS X Users:
-	
 	$mysql --port 3308 -h 127.0.0.1 -utestuser -ptestpass
 After the connection is successful, rpc can be invoked just like invoke mysql stored procedures defined in the method:
 
