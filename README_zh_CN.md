@@ -97,9 +97,6 @@ pymysqlrpc 提供了web，命令行两种查看系统状态的方式，如果你
 
 还可以root 用户 mysql命令行登录：
 
-	$mysql -uroot -prootpass -P3308
-或者MacOS上使用：
-
 	$mysql --port 3308 -h 127.0.0.1 -utestuser -ptestpass
 执行 **call pymysqlrpcinfo;**
 

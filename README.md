@@ -100,7 +100,7 @@ then can see:
 
 and you can login pymysqlrpc server throght mysql command line:
 
-	$mysql -uroot -prootpass -P3308
+	$mysql --prot 3308 -h 127.0.0.1 -uroot -prootpass
 
 type  **call pymysqlrpcinfo;**
 
