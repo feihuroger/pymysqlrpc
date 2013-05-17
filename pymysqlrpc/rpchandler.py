@@ -42,13 +42,13 @@ class RPCHandler(object):
         self.authed = False
         self.sid = -1
         self.datalist = []
-        self.gdict = {}  # ¸ÃÓÃ»§¿ÉÖ´ĞĞº¯ÊıÁĞ±í, dict of can be called functions
+        self.gdict = {}  # è¯¥ç”¨æˆ·å¯æ‰§è¡Œå‡½æ•°åˆ—è¡¨, dict of can be called functions
         self.cmdarg = "command"
 
-        self.beginconntime = time.time()  # Á´½Ó¿ªÊ¼Ê±¼ä
-        self.beginauthtime = 0  # ¿Í»§¶Ë¿ªÊ¼auth Ê±¼ä
-        self.lastqueryBEGtime = 0  # ×îºóÒ»¸öquery¿ªÊ¼Ê±¼ä
-        self.lastqueryENDtime = 0  # ×îÓĞÒ»¸öquery½áÊøÊ±¼ä
+        self.beginconntime = time.time()  # é“¾æ¥å¼€å§‹æ—¶é—´
+        self.beginauthtime = 0  # å®¢æˆ·ç«¯å¼€å§‹auth æ—¶é—´
+        self.lastqueryBEGtime = 0  # æœ€åä¸€ä¸ªqueryå¼€å§‹æ—¶é—´
+        self.lastqueryENDtime = 0  # æœ€æœ‰ä¸€ä¸ªqueryç»“æŸæ—¶é—´
         self.totalquery = 0
 
         self.log = self.server.log
@@ -56,7 +56,7 @@ class RPCHandler(object):
 
     def work(self):
         """
-            ´¦ÀísocketµÄËùÓĞÇëÇó£¬Ò»Ö±Ö´ĞĞ,Ö±µ½¶ÏµôÁ¬½Ó
+            å¤„ç†socketçš„æ‰€æœ‰è¯·æ±‚ï¼Œä¸€ç›´æ‰§è¡Œ,ç›´åˆ°æ–­æ‰è¿æ¥
             deal with the request of the socket, run forever until socket be breaked
         """
         self._structpacket(self._handshake())
@@ -86,7 +86,7 @@ class RPCHandler(object):
                     pass
             self.__dict__.pop('socket', None)
             if connclose == 0:
-                # Á´½Ó·ÇÕı³£ÖĞ¶Ï
+                # é“¾æ¥éæ­£å¸¸ä¸­æ–­
                 self.log.info('%-8s: %s ' % ('conCLOS2',  self.client_address))
                 self.state['ecC'] += 1
 
@@ -187,7 +187,7 @@ class RPCHandler(object):
 
     def _handshake(self):
         """
-            mysql ¿Í»§¶Ë¸ÕÁ¬½ÓÉÏÀ´£¬·şÎñÆ÷·¢ËÍÎÕÊÖĞ­Òé°ü
+            mysql å®¢æˆ·ç«¯åˆšè¿æ¥ä¸Šæ¥ï¼ŒæœåŠ¡å™¨å‘é€æ¡æ‰‹åè®®åŒ…
             mysql client connect, server send handshake
         """
         version = SERVER_VERSION
@@ -203,11 +203,11 @@ class RPCHandler(object):
 
     def _data_received(self, data):
         """
-            ´«Í³µÄ¶Á°ü£¬½â°ü£¬ÏÈ¶Á4×Ö½ÚµÄ°üÍ·£¬µÃµ½bodyµÄ³¤¶È£¬ÔÙ¶ÁÈ¡body
+            ä¼ ç»Ÿçš„è¯»åŒ…ï¼Œè§£åŒ…ï¼Œå…ˆè¯»4å­—èŠ‚çš„åŒ…å¤´ï¼Œå¾—åˆ°bodyçš„é•¿åº¦ï¼Œå†è¯»å–body
             read 4 byte head or request , then read body the request
         """
         self.buf += data
-        if len(self.buf) >= 1024:  # ¹æ·¶³¤¶È 16777216 £¬µ«×öÎªrpcÀ´Ëµ£¬²»ÓÃÕâÃ´³¤£¬1K¾Í×ã¹»ÁË
+        if len(self.buf) >= 1024:  # è§„èŒƒé•¿åº¦ 16777216 ï¼Œä½†åšä¸ºrpcæ¥è¯´ï¼Œä¸ç”¨è¿™ä¹ˆé•¿ï¼Œ1Kå°±è¶³å¤Ÿäº†
             self.socket.close()
         if not self.authed and len(self.buf) > 1024:
             self.socket.close()
@@ -250,7 +250,7 @@ class RPCHandler(object):
 
     def auth(self, data):
         """
-            mysql µÇÂ¼ÈÏÖ¤
+            mysql ç™»å½•è®¤è¯
             mysql auth
         """
         client_option = struct.unpack("<I", data[:4])[0]
@@ -260,7 +260,7 @@ class RPCHandler(object):
         zeropos = data[32:].find('\x00')
         zeropos += 32
         username = data[32:zeropos]
-        # Ô¤ÁôÁËÈı¸öÁ´½Ó¸ørootÓÃ»§
+        # é¢„ç•™äº†ä¸‰ä¸ªé“¾æ¥ç»™rootç”¨æˆ·
         if self.server.pool is not None and \
            self.server.pool.free_count() <= 2 and \
            username != 'root':
@@ -285,7 +285,7 @@ class RPCHandler(object):
         try:
             self.state['taC'] += 1
             self.beginauthtime = time.time()  # this greenlet ,auth begin time
-            # ÏÈÅĞ¶ÏÓÃ»§ÃûÊÇ·ñ´æÔÚ£¬È»ºóÔÙÅĞ¶ÏÃÜÂëÊÇ·ñ´í
+            # å…ˆåˆ¤æ–­ç”¨æˆ·åæ˜¯å¦å­˜åœ¨ï¼Œç„¶åå†åˆ¤æ–­å¯†ç æ˜¯å¦é”™
             if username in self.aclmap:
                 password, _ = self.aclmap[username]
                 if self._auth(password, self.sbuffer, cbuffer, dbname, client_option, max_packet_size):
@@ -319,12 +319,12 @@ class RPCHandler(object):
 
     def _toresultset(self, retvar):
         """
-            ½«º¯Êı·µ»Øretvar£¬°´ÕÕmysql·µ»Ø½á¹û¼¯µÄĞ­Òé£¬´¦Àí³Émysql½á¹û¼¯
+            å°†å‡½æ•°è¿”å›retvarï¼ŒæŒ‰ç…§mysqlè¿”å›ç»“æœé›†çš„åè®®ï¼Œå¤„ç†æˆmysqlç»“æœé›†
             reorganize the return of user function into mysql reslt of mysql
         """
         collist = []
         if type(retvar) == tuple and len(retvar) == 2 and type(retvar[0]) == tuple and type(retvar[1]) == list:
-            # ×î±ê×¼£¬×îÈ«ÃæµÄ·µ»Ø
+            # æœ€æ ‡å‡†ï¼Œæœ€å…¨é¢çš„è¿”å›
             # the standardest return
             colname, dataset = retvar
         elif type(retvar) == list:
@@ -363,7 +363,7 @@ class RPCHandler(object):
 
     def _query(self, cmdarg):
         """
-            Õû¸ö·½·¨µÄºËĞÄ´¦Àí³ÌĞò£¬´¦Àí call xxxx()ĞÎÊ½ÇëÇó
+            æ•´ä¸ªæ–¹æ³•çš„æ ¸å¿ƒå¤„ç†ç¨‹åºï¼Œå¤„ç† call xxxx()å½¢å¼è¯·æ±‚
             core method, process the request of "call foo()"
         """
         cmd = cmdarg[0]
@@ -384,7 +384,7 @@ class RPCHandler(object):
                 return
 
             query = query.lower()
-            if query == 'call':  # ´æ´¢¹ı³Ìµ÷ÓÃ
+            if query == 'call':  # å­˜å‚¨è¿‡ç¨‹è°ƒç”¨
                 if param != 'pymysqlrpcinfo':
                     try:
                         self.state['tqC'] += 1
@@ -409,7 +409,7 @@ class RPCHandler(object):
                             collist, dataset = self._toresultset(retvar)
                             self._struct_resultset(collist, dataset)
                     except LogicError, ex:
-                        # Âß¼­´íÎó£¬Ò²ÊÇÎÒÃÇÖ÷³ÌĞòÓÃÔÚÕıÈ·Ö´ĞĞÁË¹ı³Ì£¬Ö»ÊÇ·µ»ØÁË´íÎó½á¹ûÖĞ£¬ËùÒÔÒ²Òª¼ÇÂ¼ info
+                        # é€»è¾‘é”™è¯¯ï¼Œä¹Ÿæ˜¯æˆ‘ä»¬ä¸»ç¨‹åºç”¨åœ¨æ­£ç¡®æ‰§è¡Œäº†è¿‡ç¨‹ï¼Œåªæ˜¯è¿”å›äº†é”™è¯¯ç»“æœä¸­ï¼Œæ‰€ä»¥ä¹Ÿè¦è®°å½• info
                         self.lastqueryENDtime = time.time()
                         request_time = 1000.0 * (self.lastqueryENDtime - self.lastqueryBEGtime)
                         self.log.info("%-8s: %s@%s:%.2fms:%s" % ('callOK2', self.username, self.client_address, request_time, param))
