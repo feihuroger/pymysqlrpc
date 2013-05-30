@@ -21,9 +21,10 @@ except:
     sys.path.append("..")
     from pymysqlrpc import LogicError
 
+port1=3308
 
 def dbcreator():
-    return pymysql.connect(host='127.0.0.1', port=3308, user='pymysqlrpc', passwd='rpcpass')
+    return pymysql.connect(host='127.0.0.1', port=port1, user='pymysqlrpc', passwd='rpcpass')
 
 # recycle must less the remote MYSQL server activetime out, then pool can initiative close connection
 # recycle=20 just for test, runmain.py, activetime is 30s

@@ -11,7 +11,7 @@ def add(a, b):
 # one item in dataset list is tuple, is a line
 # size of colname tuple is size of row
 # attention , type of one rows  will be same
-def cale(a, b):
+def cale(a, b=4):
     return('formula', 'result'), [
         ('add', float(a)+b),
         ('sub', float(a)-b),

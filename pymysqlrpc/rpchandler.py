@@ -106,6 +106,11 @@ class RPCHandler(object):
         self._structpacket(OK_PACKET)
         return
 
+    def _struct_eof(self):
+        EOF_PACKET = '\xfe\x00\x00' + struct.pack("<H", 0)
+        self._structpacket(EOF_PACKET)
+        return
+
     def _struct_ok(self, arows, insertid, server_status, warning_count, message):
         packet = '\x00'+self._encode_int(arows) + self._encode_int(insertid) + \
             struct.pack("<H", server_status) + struct.pack("<H", warning_count)
@@ -444,6 +449,12 @@ class RPCHandler(object):
         elif cmd == '\x01':  # mysql cmd quit;
             self.socket.close()
             self.log.info('%-8s: %s@%s ' % ('authCLOS', self.username, self.client_address))
+            return
+        elif cmd == '\x02':  # use somedb;
+            self._struct_simpleok()
+            return
+        elif cmd == '\x1b':  # COM_SET_OPTION;
+            self._struct_eof()
             return
         elif cmd == '\x0e':  # mysql client ping
             self._struct_simpleok()
