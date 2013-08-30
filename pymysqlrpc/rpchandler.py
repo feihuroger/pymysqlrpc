@@ -66,7 +66,7 @@ class RPCHandler(object):
         connclose = 0
         try:
             while self.socket is not None:
-                data = self.socket.recv(1024)
+                data = self.socket.recv(16777216)
                 if not len(data):
                     self.log.info('%-8s: %s ' % ('conERR',  self.client_address))
                     break
@@ -212,9 +212,9 @@ class RPCHandler(object):
             read 4 byte head or request , then read body the request
         """
         self.buf += data
-        if len(self.buf) >= 1024:  # 规范长度 16777216 ，但做为rpc来说，不用这么长，1K就足够了
+        if len(self.buf) >= 16777216:  # mysql 规范长度 16777216
             self.socket.close()
-        if not self.authed and len(self.buf) > 1024:
+        if not self.authed and len(self.buf) > 16777216:
             self.socket.close()
         if not self.packetheader:
             if len(self.buf) >= 4:
