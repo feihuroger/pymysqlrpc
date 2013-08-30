@@ -1,7 +1,9 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1.0'
+# run :python setup.py sdist upload
+
+version = '0.1.1'
 
 setup(name='pymysqlrpc',
       version=version,
