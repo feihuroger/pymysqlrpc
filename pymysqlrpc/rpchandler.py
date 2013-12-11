@@ -96,6 +96,8 @@ class RPCHandler(object):
 
     def _structpacket(self, pkt):
         self.sid += 1
+        if(self.sid>255):
+            self.sid=0
         len2, len1 = divmod(len(pkt), 65536)
         header = struct.pack("<HBB", len1, len2, self.sid)
         self.datalist.append(header+pkt)
