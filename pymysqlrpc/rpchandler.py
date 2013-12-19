@@ -61,19 +61,19 @@ class RPCHandler(object):
         """
         self._structpacket(self._handshake())
         self._sendall(''.join(self.datalist))
-        self.log.info('%-8s: %s ' % ('conBEGIN',  self.client_address))
+        #self.log.info('%-8s: %s ' % ('conBEGIN',  self.client_address))
         self.state['tcC'] += 1
         connclose = 0
         try:
             while self.socket is not None:
                 data = self.socket.recv(16777216)
                 if not len(data):
-                    self.log.info('%-8s: %s ' % ('conERR',  self.client_address))
+                    self.log.warning('%-8s: %s ' % ('conERR',  self.client_address))
                     break
                 self._data_received(data)
         except socket.error, e:
             if e[0] == errno.EBADF:
-                self.log.info('%-8s: %s ' % ('conCLOS1',  self.client_address))
+                #self.log.info('%-8s: %s ' % ('conCLOS1',  self.client_address))
                 self.state['ncC'] += 1
                 connclose = 1
         except ValueError:
@@ -87,7 +87,7 @@ class RPCHandler(object):
             self.__dict__.pop('socket', None)
             if connclose == 0:
                 # 链接非正常中断
-                self.log.info('%-8s: %s ' % ('conCLOS2',  self.client_address))
+                self.log.warning('%-8s: %s ' % ('conCLOS2',  self.client_address))
                 self.state['ecC'] += 1
 
     def _sendall(self, data):
@@ -300,7 +300,7 @@ class RPCHandler(object):
                     self.authed = True
                     self.username = username
                     (_, self.gdict) = self.aclmap[username]
-                    self.log.info('%-8s: %s@%s ' % ('authOK', username, self.client_address))
+                    #self.log.info('%-8s: %s@%s ' % ('authOK', username, self.client_address))
                 else:
                     self._structpacket('\xfe')
                     self.sid += 1
@@ -409,7 +409,7 @@ class RPCHandler(object):
 
                         self.lastqueryENDtime = time.time()
                         request_time = 1000.0 * (self.lastqueryENDtime - self.lastqueryBEGtime)
-                        self.log.info("%-8s: %s@%s:%.2fms:%s" % ('callOK1', self.username, self.client_address, request_time, param))
+                        self.log.info("%-8s: %s@%s:%10.02fms:%8.2fms:%s" % ('callOK1', self.username, self.client_address, self.lastqueryBEGtime, request_time, param))
                         if not retvar:
                             self._struct_ok(1, 0, 0, 0, "")
                         else:
@@ -450,7 +450,7 @@ class RPCHandler(object):
 
         elif cmd == '\x01':  # mysql cmd quit;
             self.socket.close()
-            self.log.info('%-8s: %s@%s ' % ('authCLOS', self.username, self.client_address))
+            #self.log.info('%-8s: %s@%s ' % ('authCLOS', self.username, self.client_address))
             return
         elif cmd == '\x02':  # use somedb;
             self._struct_simpleok()
