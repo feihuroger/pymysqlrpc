@@ -57,10 +57,11 @@ class RPCHandler(object):
     def work(self):
         """
             处理socket的所有请求，一直执行,直到断掉连接
-            deal with the request of the socket, run forever until socket be breaked
+            deal with all requests of one socket, run forever until the socket be breaked
         """
         self._structpacket(self._handshake())
         self._sendall(''.join(self.datalist))
+        # client socket is connecting
         #self.log.info('%-8s: %s ' % ('conBEGIN',  self.client_address))
         self.state['tcC'] += 1
         connclose = 0
@@ -73,7 +74,9 @@ class RPCHandler(object):
                 self._data_received(data)
         except socket.error, e:
             if e[0] == errno.EBADF:
-                #self.log.info('%-8s: %s ' % ('conCLOS1',  self.client_address))
+                # 客户端socket 关闭
+                # client socket closed
+                # self.log.info('%-8s: %s ' % ('conCLOS1',  self.client_address))
                 self.state['ncC'] += 1
                 connclose = 1
         except ValueError:
@@ -87,6 +90,7 @@ class RPCHandler(object):
             self.__dict__.pop('socket', None)
             if connclose == 0:
                 # 链接非正常中断
+                # the socket connection unusually closed
                 self.log.warning('%-8s: %s ' % ('conCLOS2',  self.client_address))
                 self.state['ecC'] += 1
 

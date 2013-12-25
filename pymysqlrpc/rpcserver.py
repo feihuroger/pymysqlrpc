@@ -38,7 +38,6 @@ class RPCServer(StreamServer):
             logging.write = logging.info
             setattr(self.log, "critical", partial(self.log.critical, exc_info=True))
             setattr(self.log, "error", partial(self.log.error, exc_info=True))
-            setattr(self.log, "warning", partial(self.log.warning, exc_info=True))
         else:
             self.log = log
         # 非常重要handlers={} ，每有一个客户端连接，就添加个新 item < handler:greenlet >，便于通过 handler 去处理对应的greenlet
@@ -94,7 +93,7 @@ class RPCServer(StreamServer):
             querytimeout: overtime query
             activetimeout: not active for a long time (just for NOT 'root' user)
         '''
-        self.log.info("%-8s: interl= %ds; querTOUT= %ds;  actiTOUT= %ds; connTOUT= %ds;" % (
+        self.log.info("%-8s: interl= %ds; querTout= %ds;  actiTout= %ds; connTout= %ds;" % (
             'monitor', interval, querytimeout, activetimeout, conntimeout))
 
         while True:
@@ -129,8 +128,8 @@ class RPCServer(StreamServer):
 
     def closereq(self, handlers):
         for i, j in handlers['conn']:
-            i.socket.close()
             gevent.kill(j)
+            i.socket.close()
             self.log.warning("%-8s: %s@%s: conn timeout" % ('connTout', i.username, i.client_address))
 
         for i, j in handlers['active']:
@@ -145,9 +144,9 @@ class RPCServer(StreamServer):
             i.packetheader = False
             i._sendall(''.join(i.datalist))
             self.state['eq'] += 1
-            self.log.error("%-8s: %s@%s:%s" % ('querTOUT', i.username, i.client_address, i.cmdarg))
-            i.socket.close()
             gevent.kill(j)
+            i.socket.close()
+            self.log.error("%-8s: %s@%s:%s" % ('querTout', i.username, i.client_address, i.cmdarg))
 
     def handle(self, socket, address):
         '''
