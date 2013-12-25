@@ -31,7 +31,7 @@ class RPCServer(StreamServer):
         self.aclmap = aclmap
 
         if log is None:
-            self.log = logging
+            self.log = logging.getLogger('framework')
             logging.basicConfig(fromat="%(asctime)s %(levelname)-8s %(message)s", level='DEBUG')
             # 默认logging是没有write的，在pywsgi里输出log用了write，会报错
             # default loggins have not  method of write(), buy pywsgi need it
