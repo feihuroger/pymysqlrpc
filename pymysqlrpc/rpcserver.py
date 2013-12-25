@@ -32,10 +32,10 @@ class RPCServer(StreamServer):
 
         if log is None:
             self.log = logging.getLogger('framework')
-            logging.basicConfig(fromat="%(asctime)s %(levelname)-8s %(message)s", level='DEBUG')
+            logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level='DEBUG')
             # 默认logging是没有write的，在pywsgi里输出log用了write，会报错
             # default loggins have not  method of write(), buy pywsgi need it
-            logging.write = logging.info
+            self.log.write = self.log.info
             setattr(self.log, "critical", partial(self.log.critical, exc_info=True))
             setattr(self.log, "error", partial(self.log.error, exc_info=True))
         else:
@@ -54,11 +54,7 @@ class RPCServer(StreamServer):
             eqC:error qurey count, 错误query 总次数
         """
         self.state = {'sbT': time.time(), 'tcC': 0, 'ncC': 0, 'ecC': 0, 'taC': 0, 'eaC': 0, 'tqC': 0, 'eqC': 0}
-        self.log.info("%-8s: %s@%s" % (
-            'svrstart',
-            repr(listener),
-            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-        )
+        self.log.info("%-8s: %s" % ('svrstart', repr(listener)))
         self.webviewer(webport)
         if interval > 0:
             if querytimeout <= 0:
@@ -75,12 +71,9 @@ class RPCServer(StreamServer):
             self.pathinfo = '/pymysqlrpc/info/root/'+self.aclmap['root'][1]
 
         if webport > 0 and self.pathinfo:
+            # maybe log=self.log
             pywsgi.WSGIServer(('', webport), self.pymsqlrpcinfo, log=self.log).start()
-            self.log.info("%-8s: webport = %s@%s" % (
-                'webstart',
-                repr(webport),
-                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-            )
+            self.log.info("%-8s: webport = %s" % ('webstart', repr(webport)))
 
     def monitor(self, interval=1, conntimeout=3, querytimeout=3, activetimeout=1800):
         '''
@@ -177,7 +170,7 @@ class RPCServer(StreamServer):
         return None
 
     def close(self):
-        self.log.info("%-8s: %s@%s" % ('svrCLOSE', repr(self.listener), time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
+        self.log.info("%-8s: %s" % ('svrCLOSE', repr(self.listener)))
         StreamServer.close(self)
 
     def serverinfo(self):
