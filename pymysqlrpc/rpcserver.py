@@ -33,13 +33,13 @@ class RPCServer(StreamServer):
         if log is None:
             self.log = logging.getLogger('framework')
             logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level='DEBUG')
-            # 默认logging是没有write的，在pywsgi里输出log用了write，会报错
-            # default loggins have not  method of write(), buy pywsgi need it
-            self.log.write = self.log.info
-            setattr(self.log, "critical", partial(self.log.critical, exc_info=True))
-            setattr(self.log, "error", partial(self.log.error, exc_info=True))
         else:
             self.log = log
+        # 默认logging是没有write的，在pywsgi里输出log用了write，会报错
+        # default loggins have not  method of write(), buy pywsgi need it
+        self.log.write = self.log.info
+        setattr(self.log, "critical", partial(self.log.critical, exc_info=True))
+        setattr(self.log, "error", partial(self.log.error, exc_info=True))
         # 非常重要handlers={} ，每有一个客户端连接，就添加个新 item < handler:greenlet >，便于通过 handler 去处理对应的greenlet
         # handlers={} is very import struct, when a new client to connect, append it with new item < handler: greenlet>, we can process some greenlet throght the handler
         self.handlers = {}
