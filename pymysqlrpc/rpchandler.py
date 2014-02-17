@@ -95,7 +95,18 @@ class RPCHandler(object):
                 self.state['ecC'] += 1
 
     def _sendall(self, data):
-        self.socket.send(data)
+        # 分包发送(不知什么愿意,有时在某些操作系统环境下,如果data超长,某些平台客户端会接收不全数据,卡在那里)
+        # splite long data to some buffs, if data to long, some OS client can't receive all, will be hang up.
+        ## self.socket.send(data)
+        buffsize = 10240
+        datalen = len(data)
+        countbuff = int(datalen/buffsize)
+        modbuff = datalen%buffsize
+        if( countbuff > 0):
+            for x in xrange(0,countbuff):
+                self.socket.send(data[x*buffsize: (x+1)*buffsize])
+        if(modbuff > 0):
+            self.socket.send(data[countbuff*buffsize:])
         self.datalist = []
 
     def _structpacket(self, pkt):
