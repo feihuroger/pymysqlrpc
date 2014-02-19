@@ -15,6 +15,7 @@ from .logicerror import LogicError
 SERVER_VERSION = '\n5.1.23-feihuroger\x00'
 
 TYPENO = {
+    'decimal':  0x00,  # FIELD_TYPE_DECIMAL
     'int':      0x03,  # FIELD_TYPE_LONG
     'long':     0x03,  # FIELD_TYPE_LONG
     'float':    0x05,  # FIELD_TYPE_DOUBLE
@@ -377,6 +378,8 @@ class RPCHandler(object):
                     collist.append((colname, 'datetime'))
                 elif celltype.__name__ == "bytearray":
                     collist.append((colname, 'buffer'))
+                elif cell.__class__.__name__ == 'Decimal':
+                    collist.append((colname, 'decimal'))
                 else:
                     raise ValueError("cell type can not turn into mysql: %s" % repr(cell))
         else:
