@@ -410,7 +410,7 @@ class RPCHandler(object):
 
             query = query.lower()
             if query == 'call':  # 存储过程调用
-                if param != 'pymysqlrpcinfo':
+                if param != 'pymysqlrpcinfo' and param != 'turnonlog' and param != 'turnofflog':
                     try:
                         self.state['tqC'] += 1
                         self.lastqueryBEGtime = time.time()
@@ -427,7 +427,8 @@ class RPCHandler(object):
 
                         self.lastqueryENDtime = time.time()
                         request_time = 1000.0 * (self.lastqueryENDtime - self.lastqueryBEGtime)
-                        self.log.info("%-8s: %s@%s:%10.03f s:%8.03fms:%s" % ('callOK1', self.username, self.client_address, self.lastqueryBEGtime, request_time, param))
+                        if self.server.frameworklog:
+                            self.log.info("%-8s: %s@%s:%10.03f s:%8.03fms:%s" % ('callOK1', self.username, self.client_address, self.lastqueryBEGtime, request_time, param))
                         if not retvar:
                             self._struct_ok(1, 0, 0, 0, "")
                         else:
@@ -437,7 +438,8 @@ class RPCHandler(object):
                         # 逻辑错误，也是我们主程序用在正确执行了过程，只是返回了错误结果中，所以也要记录 info
                         self.lastqueryENDtime = time.time()
                         request_time = 1000.0 * (self.lastqueryENDtime - self.lastqueryBEGtime)
-                        self.log.info("%-8s: %s@%s:%10.03f s:%8.03fms:%s" % ('callOK2', self.username, self.client_address, self.lastqueryBEGtime, request_time, param))
+                        if self.server.frameworklog:
+                            self.log.info("%-8s: %s@%s:%10.03f s:%8.03fms:%s" % ('callOK2', self.username, self.client_address, self.lastqueryBEGtime, request_time, param))
                         self._struct_error(ex.errno, "HY100", ex.errmsg)
                     except Exception, ex:
                         self.lastqueryENDtime = time.time()
@@ -448,9 +450,19 @@ class RPCHandler(object):
                         pass
                     return
 
-                elif self.username == 'root':  # only root can "call pymysqlrpcinfo;"  to get server infomation
+                elif self.username == 'root':
+                    # only root can "call pymysqlrpcinfo;"  to get server infomation
+                    # logon: turn on log of info
+                    # logoff: turn off log fo info
                     # get pymysqlrpc server running status
-                    collist, dataset = self._toresultset(self.server.serverinfo())
+                    if param == 'pymysqlrpcinfo':
+                        collist, dataset = self._toresultset(self.server.serverinfo())
+                    else:
+                        if param == 'turnonlog':
+                            self.server.turnonlog()
+                        elif param == 'turnofflog':
+                            self.server.turnofflog()
+                        collist, dataset =self._toresultset((('frameworklog',),[(str(self.server.frameworklog),)]))
                     self._struct_resultset(collist, dataset)
                     return
                 else:

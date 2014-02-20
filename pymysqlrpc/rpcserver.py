@@ -20,6 +20,7 @@ class RPCServer(StreamServer):
     """
 
     FRAME_VERSION = -1
+    frameworklog = False
 
     def __init__(self, listener, aclmap, spawn=100, log=None, webport=8308, interval=1, querytimeout=3, conntimeout=3, activetimeout=1800):
         StreamServer.__init__(self, listener, spawn=spawn)
@@ -188,6 +189,7 @@ class RPCServer(StreamServer):
                 self.interval, self.querytimeout, self.activetimeout)))
         else:
             dataset.append(('monitor', '0'))
+        dataset.append(('frameworklog', str(self.frameworklog)))
         dataset.append(('begin   time', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.state['sbT']))))
         dataset.append(('running time', '%d days %d hours %d seconds' % sectodhs(time.time()-self.state['sbT'])))
         dataset.append(('pool  stat', 'using:%7d; size:%9d;' % (len(self.pool), self.pool.size)))
@@ -225,3 +227,9 @@ class RPCServer(StreamServer):
             return ["<pre>\r\n%s</pre>" % infostr]
         else:
             return ["this is one pymysqlrpc"]
+
+    def turnonlog(self):
+        self.frameworklog = True
+
+    def turnofflog(self):
+        self.frameworklog = False
