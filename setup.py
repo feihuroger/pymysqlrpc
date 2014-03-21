@@ -3,7 +3,7 @@ import sys, os
 
 # run :python setup.py sdist upload
 
-version = '0.1.2'
+version = '0.1.4'
 
 setup(name='pymysqlrpc',
       version=version,
