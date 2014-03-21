@@ -39,7 +39,7 @@ class RPCHandler(object):
         self.aclmap = server.aclmap
 
         self.buf = ""
-        self.packetheader = False
+        self.packetfull = False
         self.authed = False
         self.sid = -1
         self.datalist = []
@@ -232,18 +232,18 @@ class RPCHandler(object):
         self.buf += data
         if len(self.buf) >= 16777216:  # mysql 规范长度 16777216
             self.socket.close()
-        if not self.authed and len(self.buf) > 16777216:
+        if not self.authed and len(self.buf) >= 16777216:
             self.socket.close()
-        if not self.packetheader:
+        if not self.packetfull:
             if len(self.buf) >= 4:
                 len1, len2, self.sid = struct.unpack("<HBB", self.buf[:4])
                 length = (len2 << 16) + len1
-                self.packetheader = True
             else:
                 return
 
         body = self.buf[4:]
         if len(body) >= length:
+            self.packetfull = True
             cmdarg = body[:length]
             self.cmdarg = cmdarg
             self.buf = body[length:]
@@ -253,7 +253,7 @@ class RPCHandler(object):
                     self._query(cmdarg)
                 else:
                     self.auth(cmdarg)
-                self.packetheader = False
+                self.packetfull = False
                 self._sendall(''.join(self.datalist))
             except:
                 self._struct_error(9999, "HY000", "Internal server error. Close connection.")

@@ -16,4 +16,4 @@ __all__ = ["RPCServer", "LogicError"]
 from .rpcserver import RPCServer
 from .logicerror import LogicError
 
-RPCServer.FRAME_VERSION = '0.1.3'
+RPCServer.FRAME_VERSION = '0.1.4'
