@@ -166,7 +166,7 @@ class RPCServer(StreamServer):
             from sourc of super super class BaseServer, the type of first arg from greenlet is gevet.socket.socket
         '''
         for i in self.pool.greenlets:
-            if id(i.args[0]) == id(handler.socket):
+            if hasattr(i, "args") and id(i.args[0]) == id(handler.socket):
                 return i
         return None
 
